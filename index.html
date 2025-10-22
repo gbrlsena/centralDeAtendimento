@@ -1,5 +1,6 @@
 <!--  Feito por Sena 💚 -->
-<!--  15/08/2025  -->
+<!--  Criado em: 15/08/2025  -->
+<!--  Atualizado em: 22/10/2025  -->
 
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -94,6 +95,14 @@
       color: #0a9f82;
       font-size: 1.2rem;
       flex-grow: 1;
+    }
+    
+    .bank-code {
+        color: #777;
+        font-weight: 300; /* Deixa a fonte mais leve */
+        font-size: 0.9rem;
+        margin-left: 8px;
+        vertical-align: middle; /* Alinha verticalmente com o nome */
     }
 
     .toggle-icon {
@@ -266,7 +275,7 @@
 </head>
 <body>
   <div class="search-container">
-    <input type="text" id="search" placeholder="Digite o nome do banco..." />
+    <input type="text" id="search" placeholder="Pesquisar por nome ou código do banco..." />
     <span id="generator-icon" title="Gerador de Código de Banco">&#9881;</span>
   </div>
 
@@ -284,6 +293,7 @@
       <h2>Gerador de Código para Banco</h2>
       <div class="generator-form">
         <input type="text" id="bank-name" placeholder="Nome do Banco">
+        <input type="number" id="bank-code" placeholder="Código do Banco (ex: 001)">
         <p class="instruction-text">Para <strong>negrito</strong>, use asteriscos (ex: *texto em negrito*).</p>
         <textarea id="bank-contact" rows="5" placeholder="Informações de Contato..."></textarea>
         <button id="generate-code-button" class="modal-button primary-button">Gerar e Copiar Código</button>
@@ -291,7 +301,7 @@
       <p class="instruction-text" style="margin-top: 20px;">
         <strong>Resultado:</strong> O código gerado já foi selecionado. Apenas pressione <strong>Ctrl+C</strong> para copiar.
       </p>
-      <textarea id="generated-code-output" rows="8" readonly placeholder="O código gerado aparecerá aqui..."></textarea>
+      <textarea id="generated-code-output" rows="9" readonly placeholder="O código gerado aparecerá aqui..."></textarea>
     </div>
   </div>
 
@@ -321,330 +331,386 @@
     const bancos = [
       {
         nome: "Agibank",
+        codigo: "121",
         contato: "&#128222; <strong>Capitais e regiões metropolitanas</strong>: 3004-2221<br>&#128222; <strong>Demais localidades</strong>: 0800 602 0022"
       },
       {
         nome: "Alfa",
+        codigo: "025",
         contato: "&#128222; <strong>Capitais</strong>: 4004 3344<br>&#128222; <strong>Demais localidades</strong>: 0800 725 3344<br>&#128222; <strong>Exclusivo para deficientes auditivos e de fala</strong>: 0800 770 5244<br><br>&#128233; <strong>E-mail</strong>: alfaline@bancoalfa.com.br"
       },
       {
         nome: "Banco do Brasil",
+        codigo: "001",
         contato: "&#128222; <strong>Capitais e regiões metropolitanas</strong>: 4004 0001<br>&#128222; <strong>Demais localidades</strong>: 0800 729 0001<br><br>&#128241; <strong>Internet Banking</strong>: <a href='https://www2.bb.com.br/aapf/login.html#/acesso-aapf-agencia-conta' target='_blank'>Clique aqui</a><br>&#128241; <strong>Aplicativo</strong>: <a href='https://www.bb.com.br/pbb/rapido/' target='_blank'>Clique aqui</a><br>&#128216; <strong>Passo a Passo</strong>: Empréstimos &#8594; Consultas &#8594; Extrato de empréstimo contratado"
       },
       {
         nome: "Banrisul",
+        codigo: "041",
         contato: "&#128222; <strong>Cidade de Porto Alegre</strong>: 051 3210 0122<br>&#128222; <strong>Interior do RS</strong>: 0800 541 8855<br>&#128222; <strong>Fora do Estado RS</strong>: 0800 541 8855<br><br>&#128241; <strong>WhatsApp</strong>: (51) 3215 1800"
       },
       {
         nome: "Bari",
+        codigo: "330",
         contato: "&#128222; <strong>Capitais e regiões metropolitanas</strong>: 4007 2628<br>&#128222; <strong>Demais localidades</strong>: 0800 602 7007<br><br>&#128233; <strong>E-mail</strong>: ajuda@bancobari.com.br"
       },
        {
         nome: "Blue Assist",
+        codigo: " ",
         contato: "&#128241; <strong>WhatsApp</strong>: 55 (11) 3003-4521<br> &#128233; <strong>E-mail</strong>: suporte@blueassist.com.br<br> &#128233; <strong>E-mail</strong>: sorteios@blueassist.com.br"
      },
       {
         nome: "BMG",
+        codigo: "318",
         contato: "&#128222; <strong>Ligações via telefone celular</strong>: 4002 7007<br>&#128222; <strong>Ligações via telefone fixo</strong>: 0800 770 1790<br><br>&#128241; <strong>WhatsApp</strong>: 011 3003-3955"
       },
       {
         nome: "BNP Paribas",
+        codigo: "755",
         contato: "&#128222; <strong>Telefone 1</strong>: (11) 3841-3100<br>&#128222; <strong>Telefone 2</strong>: (11) 2360-3100"
       },
       {
         nome: "Bradesco",
+        codigo: "237",
         contato: "&#128222; <strong>Capitais e regiões metropolitanas</strong>: 4002 0022<br>&#128222; <strong>Demais localidades</strong>: 0800 570 0022<br>&#128222; <strong>Exclusivo para deficientes auditivos e de fala</strong>: 0800 722 0099"
       },
       {
         nome: "Bradesco Financiamento",
+        codigo: "394",
         contato: "&#128222; <strong>Capitais e regiões metropolitanas</strong>: 4004-4433<br>&#128222; <strong>Demais localidades</strong>: 0800 722 4433"
       },
       {
         nome: "C6",
+        codigo: "336",
         contato: "&#128222; <strong>Capitais e regiões metropolitanas</strong>: 3003 6116<br>&#128222; <strong>Demais localidades</strong>: 0800 660 6116<br><br>&#128241; <strong>WhatsApp</strong>: (11) 2832 6088"
       },
       {
         nome: "Caixa Econômica",
+        codigo: "104",
         contato: "&#128222; <strong>Capitais e regiões metropolitanas</strong>: 4004 0104<br>&#128222; <strong>Demais localidades</strong>: 0800 104 0 104<br><br>&#128241; <strong>WhatsApp</strong>: 0800 104 0 104"
       },
       {
         nome: "Capital Consig",
+        codigo: " ",
         contato: "&#128222; <strong>Capitais e regiões metropolitanas</strong>: (11) 4210-2496<br>&#128222; <strong>Demais localidades</strong>: (11) 4210-2496<br><br>&#128233; <strong>E-mail</strong>: contato@capitalconsig.com.br"
       },
  	{
     nome: "Crefisa",
+    codigo: "069",
     contato: "&#9742;&#65039; <strong>Central Consignado</strong>: 11 3003 3376<br>&#128241; <strong>WhatsApp</strong>: 0800 273 3376<br>&#9200; De segunda a sexta-feira, das 08h às 19h<br>&#9200; Aos sábados, das 09h às 13h<br><br>&#128222; <strong>Ouvidoria</strong>: 0800 703 8891<br>&#9200; De segunda a sexta-feira, das 09h às 18h<br><br>&#9742;&#65039; <strong>SAC</strong>: 0800 727 4884<br>&#9200; De segunda a domingo: 24 horas por dia"
   },
       {
     	nome: "Crefaz",
+        codigo: " ",
     	contato: "&#9742;&#65039; <strong>SAC</strong>: 0800 052 5051<br>&#128222; <strong>Ouvidoria</strong>: 0800 067 5757<br>&#128233; ouvidoria@crefaz.com.br<br>&#127760; <strong>Site</strong>: <a href='https://site.crefaz.com.br/contato' target='_blank'>Clique aqui</a>"
       },
       {
         nome: "Daycoval",
+        codigo: "707",
         contato: "&#9742;&#65039; <strong>Central de Relacionamento</strong>: 0300 111 0500<br><br>&#128222; <strong>SAC</strong>: 0800 775 0500 (Capitais e regiões metropolitanas)<br>&#128222; <strong>Ouvidoria</strong>: 0800 777 0900<br><br>&#128241; <strong>WhatsApp</strong>: 55 (11) 99111-6583"
       },
       {
         nome: "Digio",
+        codigo: "335",
         contato: "&#128222; <strong>Capitais e regiões metropolitanas</strong>: 3003-8734<br>&#128222; <strong>Demais localidades</strong>: 0800 333   8734<br>&#9200; Das 8h às 22h (Seg. a sex.)<br><br>&#128222; <strong>Ouvidoria</strong>: 0800 333 1474<br>&#9200; Atendimento das 10h às 16h - Segunda a sexta, exceto feriados.<br><br>&#127760; <strong>Site</strong>: <a href='https://www.digio.com.br/central-de-ajuda/' target='_blank'>Clique aqui</a>"
       },
       {
         nome: "Facta",
+        codigo: "149",
         contato: "&#127760;<strong> SAC</strong>: <a href='https://sac.factafinanceira.com.br/#/' target='_blank'>Clique aqui</a><br>&#128241; <strong>WhatsApp</strong>: (51) 3021-7833"
       },
 	{
     nome: "HOPE",
+    codigo: " ",
     contato: `☎️ <strong>Telefone 1</strong>: +55 11 31251000<br>☎️ <strong>Telefone 1</strong>: +55 11 31251001<br>📩 <strong>E-mail</strong>: hopeasset@hopeasset.com.br<br>🌐 <strong>Site</strong>: https://hopeasset.com.br/contato/`
        },
       {
         nome: "Inbursa",
+        codigo: "012",
         contato: "&#128222; <strong>Central de Relacionamento (Capitais)</strong>: 11 3030-4444<br>&#128222; <strong>Demais localidades</strong>: 0800 641-4444"
       },
       {
         nome: "Inter",
+        codigo: "077",
         contato: "&#128222;  <strong>Capitais e regiões metropolitanas:</strong> 3003 4070<br>&#128222; <strong>Demais localidades</strong>: 0800 940 0007 e selecione a opção 5<br><br>Caso seja correntista do banco, basta seguir este caminho no aplicativo:<br>&#128242; Empréstimo &gt; Empréstimo Consignado &gt; Contratos &gt; Documentos."
       },
       {
         nome: "Itaú",
+        codigo: "341",
         contato: "&#128222; <strong>Capitais e regiões metropolitanas</strong>: 4004 4828<br>&#128222; <strong>Demais localidades</strong>: 0800 970 4828<br><br>&#128222; <strong>Exterior</strong>: +55 11 4004 4828<br>&#9200; Atendimento de segunda a sábado, das 08h às 22h.<br><br>&#9742;&#65039; <strong>SAC</strong>: 0800 728 0728<br>&#9200; Atendimento 24 horas, 7 dias por semana."
       },
       {
         nome: "Itaú Consignados",
+        codigo: "341",
         contato: "&#128222; <strong>Capitais e regiões metropolitanas</strong>: 4004 4828<br><br>&#128222; <strong>Demais localidades</strong>: 0800 970 4828<br>&#128222; <strong>Exclusivo para deficientes auditivos e de fala (opção 5)</strong>: 4004 1999<br>&#9200; Atendimento de segunda a sábado, das 08h às 20h.<br><br>&#9742;&#65039; <strong>SAC</strong>: 0800 724 2101<br>&#128222; <strong>Central de Retenção - (WhatsApp)</strong>: 11 5225 0828<br>&#9200; Atendimento 24 horas, 7 dias por semana.<br><br>&#9742;&#65039; <strong>Ouvidoria</strong>: 0800 570 0011<br>&#9200; Atendimento de segunda a sábado, das 09h às 18h."
       },
       {
         nome: "Kardbank",
+        codigo: " ",
         contato: "<br>&#128222; <strong>Central de Atendimento:</strong> 0800 015 0001 (WhatsApp)<br>&#9200; Atendimento de segunda a sexta das 9h às 18h, exceto feriado<br><br>&#127760; <strong>Site</strong>:<a href='https://www.kardbank.com.br/#ajuda' target='_blank'>Clique aqui</a>"
       },
       {
         nome: "Master (Credcesta)",
+        codigo: "243",
         contato: "&#128222; <strong>Capitais e regiões metropolitanas</strong>: 4003-4952<br>&#128222; <strong>Demais localidades</strong>: 0800 881 0001<br>&#9200; Atendimento de segunda a sábado das 8h às 20h e domingos e feriados das 8h às 14h.<br><br>&#9742;&#65039; <strong>SAC</strong>: 0800 729 0779<br>&#9200; Atendimento 24 horas, 7 dias por semana.<br><br>&#9742;&#65039; <strong>Ouvidoria</strong>: 0800 099 9088<br>&#9200; Atendimento de segunda a sexta, das 09h às 18h."
       },
       {
         nome: "Master",
+        codigo: "243",
         contato: "<strong>Central de Relacionamento</strong><br>&#128222; 4003-4952 (capital)<br>&#128222; 0800 881 0001 (demais localidades)<br>&#9200; De segunda a domingo, das 06h às 22h, incluindo feriados.<br><br><strong>SAC</strong><br>&#128222; 0800 729 0779<br>Atendimento 24 horas, 7 dias por semana.<br><br><strong>Ouvidoria</strong><br>&#128222;0800 729 1710<br>&#9200; De segunda a sexta, das 08h às 18h, exceto feriado."
       },
       {
         nome: "Mercantil",
+        codigo: "389",
         contato: "&#128241; <strong>Whatsapp</strong>: 0800 7070 398<br>&#9200; Atendimento 24 horas, 7 dias por semana.<br><br>&#9742;&#65039; <strong>SAC</strong>: 0800 7070 398<br>&#9200; Atendimento 24 horas, 7 dias por semana.<br><br>&#128222; <strong>Ouvidoria</strong>: 0800 7070 384<br>&#9200; Atendimento de segunda a sexta, das 09h às 17h."
       },
        {
-    nome: "MeuCashCard",
-    contato: "&#9742;&#65039; <strong>Central de Atendimento</strong>: 4003-7688<br>&#9200; De segunda à sexta das 9h às 18h<br><br>&#128233; <strong>E-mail</strong>: faleconosco@meucashcard.com.br<br>&#128241; <strong>WhatsApp</strong>: <a href='https://api.whatsapp.com/send?phone=551140036426&text=Ol%C3%A1,%20gostaria%20de%20informa%C3%A7%C3%B5es%20sobre%20a%20Meu%20Cash%20Card.' target='_blank'>Clique aqui</a>"
+        nome: "MeuCashCard",
+        codigo: " ",
+        contato: "&#9742;&#65039; <strong>Central de Atendimento</strong>: 4003-7688<br>&#9200; De segunda à sexta das 9h às 18h<br><br>&#128233; <strong>E-mail</strong>: faleconosco@meucashcard.com.br<br>&#128241; <strong>WhatsApp</strong>: <a href='https://api.whatsapp.com/send?phone=551140036426&text=Ol%C3%A1,%20gostaria%20de%20informa%C3%A7%C3%B5es%20sobre%20a%20Meu%20Cash%20Card.' target='_blank'>Clique aqui</a>"
       },
       {
         nome: "Nubank",
+        codigo: "260",
         contato: "&#128222; <strong>Capitais e regiões metropolitanas</strong>: 4020 0185<br>&#128222; <strong>Demais localidades</strong>: 0800 591 2117<br><br>&#128241; <strong>Chat no aplicativo Nubank</strong>: <a href='https://nuapp.nubank.com.br/bnVhcHA6Ly9jaGF0' target='_blank'>Clique aqui</a>"
       },
       {
         nome: "Olé",
+        codigo: "169",
         contato: "&#128222; <strong>Capitais e regiões metropolitanas</strong>: 3003 4324<br>&#128222;<strong>Demais localidades</strong>: 0800 709 1234<br><br>&#9742;&#65039; <strong>SAC</strong>: 0800 726 7454<br>&#9200; Atendimento de segunda a sexta, das 08h às 22h.<br><br>&#9742;&#65039; <strong>Ouvidoria</strong>: 0800 726 7404<br>&#9200; Atendimento de segunda a sexta, das 09h às 18h."
       },
       {
         nome: "Pan",
+        codigo: "623",
         contato: "&#128222; <strong>Capitais e regiões metropolitanas</strong>: 4002 1687<br>&#128222; <strong>Demais localidades</strong>: 0800 775 8686<br>&#9200; Atendimento de segunda a sexta, das 08h às 21h e sábados das 09h às 15h<br><br>&#9742;&#65039; <strong>SAC</strong>: 0800 776 8000<br>&#128241; <strong>WhatsApp</strong>: (11) 4003-0101<br>&#9200; Atendimento 24 horas, 7 dias por semana.<br><br>&#9742;&#65039; <strong>SAC</strong>: 0800 776 9595<br>&#9200; Atendimento de segunda a sexta, das 09h às 18h."
       },
       {
         nome: "Paraná",
+        codigo: "254",
         contato: "&#9742;&#65039; <strong>SAC</strong>: 0800 645 6090<br>&#9200; Atendimento de segunda a sexta (apenas dias úteis), das 09h às 18h.<br><br>&#128187; <strong>Site</strong>: <a href='https://paranabanco.com.br/ajuda' target='_blank'>Clique aqui</a><br>1&#65039;&#8419; Ao entrar no site você clica na aba Carta DDC/LA<br>2&#65039;&#8419; Informa o seu CPF<br>3&#65039;&#8419; Será necessário confirmar alguns dados e após será liberado o documento.<br><br>&#10071; O site pode informar um erro ao informar o CPF, mas você pode tentar novamente e ele irá prosseguir."
       },
       {
         nome: "Parati",
+        codigo: "133",
         contato: "&#9742;&#65039; <strong>Central de Atendimento</strong>: (27) 2123-4777<br>&#128233; <strong>E-mail</strong>: sac@parati-cfi.com.br"
       },
       {
         nome: "Paulista",
+        codigo: "654",
         contato: "&#9742;&#65039; <strong>Central de Atendimento</strong>: (11) 3299-2000<br>&#128233; <strong>E-mail</strong>: sac@bancopaulista.com.br"
       },
       {
-  nome: "PH Tech",
-  contato: "&#128241; <strong>WhatsApp</strong>: (11) 4765-1700"
+        nome: "PH Tech",
+        codigo: " ",
+        contato: "&#128241; <strong>WhatsApp</strong>: (11) 4765-1700"
       },
       {
         nome: "Picpay",
+        codigo: "380",
         contato: "&#9742;&#65039; <strong>Central de Atendimento</strong>: 0800 025 8000<br>&#128222; <strong>Ouvidoria</strong>: 0800 025 2000<br><br>&#127760; <strong>Atendimento em libras</strong>: <a href='https://picpay.emlibras.com/' target='_blank'>Clique aqui</a>"
       },
 	{
         nome: "Pine (Amigoz)",
+        codigo: "643",
         contato: "&#128222; <strong>SAC</strong>: 0800 942 1702<br>&#128222; <strong>Empréstimos</strong>: 0800 772 5283<br>&#128222; <strong>Cartão Amigoz</strong>: 0800 772 5271<br>&#128222; <strong>Ouvidoria</strong>: 0800 725 7463"
       },
       {
         nome: "Prata",
+        codigo: " ",
         contato: "&#9742;&#65039; <strong>Contato</strong>: (21) 3942-0070<br>&#128233; <strong>E-mail</strong>: falecom@pratadigital.com.br<br>&#127760; <strong>Site</strong>: <a href='https://www.pratadigital.com.br/contato' target='_blank'>Clique aqui</a><br>&#128241; <strong>WhatsApp</strong>: <a href='https://wa.me/552139422489' target='_blank'>Clique aqui</a>"
   },
       {
         nome: "Safra",
+        codigo: "422",
         contato: "&#9742;&#65039; <strong>Central de Atendimento</strong>: 0300 151 1234<br>&#128241; <strong>Whatsapp</strong>: (11) 2650 9999"
       },
       {
         nome: "Santander",
+        codigo: "033",
         contato: "&#128222; <strong>Capitais e regiões metropolitanas</strong>: 4001 4451<br>&#128222; <strong>Demais localidades</strong>: 0800 728 4451<br>&#128222; <strong>SAC</strong>: 0800 726 4551<br>&#129467; Central de atendimento para deficientes auditivos: 0800 771 0301<br><br>&#128242; Internet Banking: <a href='https://www.oleconsignado.com.br/cliente/login' target='_blank'>Clique aqui</a>"
       },
       {
-        nome: "Seguro",
+        nome: "PagSeguro",
+        codigo: "290",
         contato: "&#9742;&#65039; <strong>Capitais e regiões metropolitanas</strong>: 4003 1775<br>&#128222; <strong>Demais localidades</strong>: 0800 728 2174<br>&#128222; <strong>Ouvidoria</strong>: 0800 728 2167"
       },
       {
         nome: "Senff",
-  contato: "&#9742;&#65039; <strong>Central de Atendimento</strong>: 0800 595 0595<br><br>&#128241; <strong>Whatsapp</strong>: 0800 595 0595<br><br>&#128233; <strong>E-mail</strong>: atendimento@senff.com.br<br>&#127760; <strong>Chat no site</strong>: <a href='https://www.senff.com.br/voce/suporte/' target='_blank'>Clique aqui</a>"
+        codigo: " ",
+        contato: "&#9742;&#65039; <strong>Central de Atendimento</strong>: 0800 595 0595<br><br>&#128241; <strong>Whatsapp</strong>: 0800 595 0595<br><br>&#128233; <strong>E-mail</strong>: atendimento@senff.com.br<br>&#127760; <strong>Chat no site</strong>: <a href='https://www.senff.com.br/voce/suporte/' target='_blank'>Clique aqui</a>"
       },
       {
         nome: "Sicoob",
+        codigo: "756",
         contato: "&#9742;&#65039; <strong>Capitais e regiões metropolitanas</strong>: 4000 1111<br>&#128222; <strong>Demais localidades</strong>: 0800 642 0000<br>&#128222; <strong>Central para deficientes auditivos ou de fala</strong>: 0800 940 0458"
       },
       {
         nome: "Sicredi",
+        codigo: "748",
         contato: "&#9742;&#65039; <strong>Central de Atendimento</strong>: 0800 724 7220<br>&#128222; <strong>Central para deficientes auditivos</strong>: 0800 724 0525<br>&#128241; <strong>Whatsapp com assistente virtual</strong>: (51) 3358 4770"
       },
       {
         nome: "Vemcard",
+        codigo: " ",
         contato: "&#9742;&#65039; <strong>Central de Atendimento</strong>: 0800 591 8687<br><br>&#128241; <strong>Whatsapp</strong>: (11) 9 9781-8983<br><br>&#128233; <strong>E-mail</strong>: sac@vemcard.com.br<br>&#127760; <strong>Site</strong>: <a href='https://vemcard.com.br/fale-conosco/' target='_blank'>Clique aqui</a>"
       },
       {
-    nome: "Will Bank",
-    contato: "&#9742;&#65039; <strong>Central de Relacionamento</strong>: 3003 - 2593<br>&#9200; 8h às 20h de segunda a domingo<br><br>&#9742;&#65039; <strong>SAC</strong>: 0800 772 1026<br>&#9200; 8h às 20h de segunda a domingo<br><br>&#128222; <strong>Ouvidoria</strong>: 0800 945 2265<br>&#9200; 8h às 17h de segunda a sexta - exceto feriados"
+        nome: "Will Bank",
+        codigo: "280",
+        contato: "&#9742;&#65039; <strong>Central de Relacionamento</strong>: 3003 - 2593<br>&#9200; 8h às 20h de segunda a domingo<br><br>&#9742;&#65039; <strong>SAC</strong>: 0800 772 1026<br>&#9200; 8h às 20h de segunda a domingo<br><br>&#128222; <strong>Ouvidoria</strong>: 0800 945 2265<br>&#9200; 8h às 17h de segunda a sexta - exceto feriados"
    }
     ];
 
-    const container = document.getElementById("bancos-container");
-    const notFoundMessage = document.getElementById("notFoundMessage");
+const container = document.getElementById("bancos-container");
+const notFoundMessage = document.getElementById("notFoundMessage");
 
-    function renderBancos(lista) {
-      container.innerHTML = "";
-      if (lista.length === 0) {
-        notFoundMessage.style.display = "block";
-      } else {
-        notFoundMessage.style.display = "none";
-        lista.sort((a, b) => a.nome.localeCompare(b.nome)).forEach(banco => {
-          const card = document.createElement("div");
-          card.className = "card";
-          const cardHeader = document.createElement("div");
-          cardHeader.className = "card-header";
-          const h3 = document.createElement("h3");
-          h3.textContent = banco.nome;
-          const toggleIcon = document.createElement("span");
-          toggleIcon.className = "toggle-icon";
-          toggleIcon.innerHTML = "&#9660;";
-          cardHeader.appendChild(h3);
-          cardHeader.appendChild(toggleIcon);
-          const contactContent = document.createElement("div");
-          contactContent.className = "contact-content";
-          contactContent.innerHTML = `<p>${banco.contato}</p>`;
-          card.appendChild(cardHeader);
-          card.appendChild(contactContent);
-          cardHeader.addEventListener("click", () => {
-            contactContent.classList.toggle("show");
-            toggleIcon.classList.toggle("rotated");
-          });
-          container.appendChild(card);
-        });
+function renderBancos(lista) {
+  container.innerHTML = "";
+  if (lista.length === 0) {
+    notFoundMessage.style.display = "block";
+  } else {
+    notFoundMessage.style.display = "none";
+    lista.sort((a, b) => a.nome.localeCompare(b.nome)).forEach(banco => {
+      const card = document.createElement("div");
+      card.className = "card";
+      const cardHeader = document.createElement("div");
+      cardHeader.className = "card-header";
+      const h3 = document.createElement("h3");
+      
+      // Adiciona o nome e o código do banco
+      let titulo = banco.nome;
+      if (banco.codigo) {
+          titulo += ` <span class="bank-code">(${banco.codigo})</span>`;
       }
-    }
+      h3.innerHTML = titulo;
 
-    document.getElementById("search").addEventListener("input", function () {
-      const termo = this.value.toLowerCase();
-      const filtrados = bancos.filter(banco =>
-        banco.nome.toLowerCase().includes(termo)
-      );
-      renderBancos(filtrados);
+      const toggleIcon = document.createElement("span");
+      toggleIcon.className = "toggle-icon";
+      toggleIcon.innerHTML = "&#9660;";
+      cardHeader.appendChild(h3);
+      cardHeader.appendChild(toggleIcon);
+      const contactContent = document.createElement("div");
+      contactContent.className = "contact-content";
+      contactContent.innerHTML = `<p>${banco.contato}</p>`;
+      card.appendChild(cardHeader);
+      card.appendChild(contactContent);
+      cardHeader.addEventListener("click", () => {
+        contactContent.classList.toggle("show");
+        toggleIcon.classList.toggle("rotated");
+      });
+      container.appendChild(card);
     });
-    
-    // --- LÓGICA DOS MODAIS ---
-    
-    // Elementos dos Modais
-    const generatorModal = document.getElementById('generator-modal');
-    const alertModal = document.getElementById('alert-modal');
-    const passwordModal = document.getElementById('password-modal');
-    
-    const generatorIcon = document.getElementById('generator-icon');
-    const closeButton = generatorModal.querySelector('.close-button');
-    const generateCodeButton = document.getElementById('generate-code-button');
-    
-    const alertMessage = document.getElementById('alert-message');
-    const alertOkButton = document.getElementById('alert-ok-button');
-    
-    const passwordInput = document.getElementById('password-input');
-    const passwordOkButton = document.getElementById('password-ok-button');
-    const passwordCancelButton = document.getElementById('password-cancel-button');
-    
-    // Função para mostrar o modal de alerta
-    function showAlertModal(message) {
-        alertMessage.textContent = message;
-        alertModal.style.display = "block";
-    }
-    
-    // Abrir o modal de senha ao clicar no ícone
-    generatorIcon.onclick = function() {
-        passwordModal.style.display = "block";
-        passwordInput.focus(); // Foca no campo de senha automaticamente
-    }
+  }
+}
 
-    // Verificar a senha
-    passwordOkButton.onclick = function() {
-        const password = passwordInput.value;
-        if (password === "ch") {
-            passwordModal.style.display = "none";
-            
-            // Limpa e abre o modal gerador
-            document.getElementById('bank-name').value = '';
-            document.getElementById('bank-contact').value = '';
-            document.getElementById('generated-code-output').value = '';
-            generatorModal.style.display = "block";
-        } else {
-            passwordModal.style.display = "none";
-            showAlertModal("Senha incorreta!");
-        }
-        passwordInput.value = ''; // Limpa o campo de senha
-    }
-    
-    // Permite teclar "Enter" para confirmar a senha
-    passwordInput.addEventListener('keyup', function(event) {
-        if (event.key === 'Enter') {
-            passwordOkButton.click();
-        }
-    });
+document.getElementById("search").addEventListener("input", function () {
+  const termo = this.value.toLowerCase();
+  const filtrados = bancos.filter(banco =>
+    banco.nome.toLowerCase().includes(termo) ||
+    (banco.codigo && banco.codigo.includes(termo)) // Procura também no código
+  );
+  renderBancos(filtrados);
+});
 
-    // Gerar o código do banco
-    generateCodeButton.onclick = function() {
-        const bankName = document.getElementById('bank-name').value;
-        const bankContactRaw = document.getElementById('bank-contact').value;
-        const outputArea = document.getElementById('generated-code-output');
+// --- LÓGICA DOS MODAIS ---
 
-        if (!bankName || !bankContactRaw) {
-            showAlertModal('Por favor, preencha todos os campos.');
-            return;
-        }
+// Elementos dos Modais
+const generatorModal = document.getElementById('generator-modal');
+const alertModal = document.getElementById('alert-modal');
+const passwordModal = document.getElementById('password-modal');
 
-        let bankContactFormatted = bankContactRaw.replace(/\*(.*?)\*/g, '<strong>$1</strong>');
-        bankContactFormatted = bankContactFormatted.replace(/`/g, '\\`').replace(/\n/g, '<br>');
+const generatorIcon = document.getElementById('generator-icon');
+const closeButton = generatorModal.querySelector('.close-button');
+const generateCodeButton = document.getElementById('generate-code-button');
 
-        const generatedCode = `  {
-    nome: "${bankName}",
-    contato: \`${bankContactFormatted}\`
-  },`;
+const alertMessage = document.getElementById('alert-message');
+const alertOkButton = document.getElementById('alert-ok-button');
 
-        outputArea.value = generatedCode;
-        outputArea.select();
-    }
-    
-    // Funções para fechar os modais
-    closeButton.onclick = function() { generatorModal.style.display = "none"; }
-    alertOkButton.onclick = function() { alertModal.style.display = "none"; }
-    passwordCancelButton.onclick = function() {
+const passwordInput = document.getElementById('password-input');
+const passwordOkButton = document.getElementById('password-ok-button');
+const passwordCancelButton = document.getElementById('password-cancel-button');
+
+// Função para mostrar o modal de alerta
+function showAlertModal(message) {
+    alertMessage.textContent = message;
+    alertModal.style.display = "block";
+}
+
+// Abrir o modal de senha ao clicar no ícone
+generatorIcon.onclick = function() {
+    passwordModal.style.display = "block";
+    passwordInput.focus();
+}
+
+// Verificar a senha
+passwordOkButton.onclick = function() {
+    const password = passwordInput.value;
+    if (password === "ch") { // Sua senha
         passwordModal.style.display = "none";
-        passwordInput.value = ''; // Limpa o campo de senha
+        
+        // Limpa e abre o modal gerador
+        document.getElementById('bank-name').value = '';
+        document.getElementById('bank-code').value = ''; // Limpa o campo de código
+        document.getElementById('bank-contact').value = '';
+        document.getElementById('generated-code-output').value = '';
+        generatorModal.style.display = "block";
+    } else {
+        passwordModal.style.display = "none";
+        showAlertModal("Senha incorreta!");
+    }
+    passwordInput.value = '';
+}
+
+passwordInput.addEventListener('keyup', function(event) {
+    if (event.key === 'Enter') {
+        passwordOkButton.click();
+    }
+});
+
+// Gerar o código do banco
+generateCodeButton.onclick = function() {
+    const bankName = document.getElementById('bank-name').value;
+    const bankCode = document.getElementById('bank-code').value; // Pega o código do banco
+    const bankContactRaw = document.getElementById('bank-contact').value;
+    const outputArea = document.getElementById('generated-code-output');
+
+    if (!bankName || !bankCode || !bankContactRaw) {
+        showAlertModal('Por favor, preencha todos os campos.');
+        return;
     }
 
-    window.onclick = function(event) {
-        if (event.target == generatorModal) { generatorModal.style.display = "none"; }
-        if (event.target == alertModal) { alertModal.style.display = "none"; }
-        if (event.target == passwordModal) {
-            passwordModal.style.display = "none";
-            passwordInput.value = ''; // Limpa o campo de senha
-        }
-    }
+    let bankContactFormatted = bankContactRaw.replace(/\*(.*?)\*/g, '<strong>$1</strong>');
+    bankContactFormatted = bankContactFormatted.replace(/`/g, '\\`').replace(/\n/g, '<br>');
 
-    // Inicia a aplicação
-    renderBancos(bancos);
-  </script>
+    const generatedCode = `  {
+nome: "${bankName}",
+codigo: "${bankCode}",
+contato: \`${bankContactFormatted}\`
+},`;
+
+    outputArea.value = generatedCode;
+    outputArea.select();
+}
+
+// Funções para fechar os modais
+closeButton.onclick = function() { generatorModal.style.display = "none"; }
+alertOkButton.onclick = function() { alertModal.style.display = "none"; }
+passwordCancelButton.onclick = function() {
+    passwordModal.style.display = "none";
+    passwordInput.value = '';
+}
+
+window.onclick = function(event) {
+    if (event.target == generatorModal) { generatorModal.style.display = "none"; }
+    if (event.target == alertModal) { alertModal.style.display = "none"; }
+    if (event.target == passwordModal) {
+        passwordModal.style.display = "none";
+        passwordInput.value = '';
+    }
+}
+
+// Inicia a aplicação
+renderBancos(bancos);
+</script>
 </body>
 </html>
