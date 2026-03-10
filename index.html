@@ -1,6 +1,6 @@
 <!--  Feito por Sena 💚 -->
 <!--  Criado em: 15/08/2025  -->
-<!--  Atualizado em: 22/10/2025  -->
+<!--  Atualizado em: 10/03/2026  -->
 
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -365,53 +365,43 @@
     const SHEET_ID = "1DOSL8EliYazxngzNnuiXLS-lcOjvmOI0lp6PReBP9NU";
     // ============================================================
 
-    const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Consultar%20bancos`;
+    const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Consultar%20bancos`;
 
     let bancosCarregados = [];
 
-    // Converte texto simples com *negrito* e \n em HTML
+    // Converte \n em quebras de linha HTML
     function formatarContato(texto) {
-      return texto
-        .replace(/\*(.*?)\*/g, '<strong>$1</strong>')
-        .replace(/\n/g, '<br>');
+      if (!texto) return '';
+      return texto.replace(/\n/g, '<br>');
     }
 
-    // Faz o parse do CSV retornado pelo Google Sheets
-    function parseCSV(csv) {
-      const linhas = csv.trim().split('\n');
-      // Pula a primeira linha (cabeçalho: bank_code, bank_name, contato)
-      return linhas.slice(1).map(linha => {
-        // Divide respeitando aspas duplas (campos com vírgula ou quebra de linha)
-        const cols = [];
-        let atual = '';
-        let dentroAspas = false;
-        for (let i = 0; i < linha.length; i++) {
-          const c = linha[i];
-          if (c === '"' && linha[i + 1] === '"') { atual += '"'; i++; }
-          else if (c === '"') { dentroAspas = !dentroAspas; }
-          else if (c === ',' && !dentroAspas) { cols.push(atual); atual = ''; }
-          else { atual += c; }
-        }
-        cols.push(atual);
-        return {
-          nome:    (cols[0] || '').trim(),
-          codigo:  (cols[1] || '').trim(),
-          contato: formatarContato((cols[2] || '').trim())
-        };
-      }).filter(b => b.nome); // Remove linhas vazias
+    // Faz o parse do JSON retornado pelo Google Sheets (robusto: suporta vírgulas e quebras de linha)
+    function parseGVizJSON(raw) {
+      // O Google retorna um wrapper JS: /*O_o*/\ngoogle.visualization.Query.setResponse({...});
+      const jsonStr = raw.replace(/^[^\{]+/, '').replace(/[^\}]+$/, '');
+      const json = JSON.parse(jsonStr);
+      const rows = json.table.rows;
+      const cols = json.table.cols.map(c => c.label.toLowerCase());
+
+      const idxCode    = cols.findIndex(c => c.includes('bank_code'));
+      const idxName    = cols.findIndex(c => c.includes('bank_name'));
+      const idxContato = cols.findIndex(c => c.includes('contato'));
+
+      return rows.map(row => {
+        const get = (idx) => (row.c[idx] && row.c[idx].v != null) ? String(row.c[idx].v) : '';
+        const codigo  = get(idxCode).trim().replace(/\.0$/, '');
+        const nome    = get(idxName).trim();
+        const contato = formatarContato(get(idxContato).trim());
+        return { codigo, nome, contato };
+      }).filter(b => b.nome);
     }
 
     async function carregarBancos() {
-      if (SHEET_ID === "COLE_O_ID_DA_SUA_PLANILHA_AQUI") {
-        document.getElementById('loading-message').innerHTML =
-          '⚠️ Configure o <strong>SHEET_ID</strong> no código para carregar os bancos.';
-        return;
-      }
       try {
         const resp = await fetch(SHEET_URL);
         if (!resp.ok) throw new Error('Erro ao buscar planilha');
-        const csv = await resp.text();
-        bancosCarregados = parseCSV(csv);
+        const raw = await resp.text();
+        bancosCarregados = parseGVizJSON(raw);
         document.getElementById('loading-message').style.display = 'none';
         renderBancos(bancosCarregados);
       } catch (e) {
